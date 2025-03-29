@@ -4,10 +4,13 @@ import axios from "axios";
 import UserList from "../components/UserList";
 import Pagination from "../components/Pagination";
 import { ToastContainer, toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 
 let BASE_URL = "https://reqres.in/";
 
 const Dashboard = () => {
+    const [dataFetching, setDataFetching] = useState(true);
+
     // state to store fetched data
     const [data, setData] = useState([]);
 
@@ -71,6 +74,7 @@ const Dashboard = () => {
         );
 
         setData(response.data);
+        setDataFetching(false);
     }
 
     // calling the getData function
@@ -81,42 +85,57 @@ const Dashboard = () => {
             window.scroll({ top: 0, behavior: "smooth" });
         };
     }, [currentPage]);
-    return (
-        <>
-            <Navbar />
-            <div className="space-y-5 p-2">
-                <h1 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-                    Welcome to the Dashboard
-                </h1>
 
-                {/* user list container */}
-                <UserList
-                    data={data}
-                    updateUserData={updateUserData}
-                    deleteUserData={deleteUserData}
-                />
+    if (dataFetching) {
+        return (
+            <>
+                <Navbar />
+                <div className="space-y-5 p-2">
+                    <h1 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+                        Welcome to the Dashboard
+                    </h1>
+                    <Spinner />
+                </div>
+            </>
+        );
+    } else {
+        return (
+            <>
+                <Navbar />
+                <div className="space-y-5 p-2">
+                    <h1 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+                        Welcome to the Dashboard
+                    </h1>
 
-                {/* pagination container */}
-                <Pagination
-                    currentPage={currentPage}
-                    data={data}
-                    setCurrentPage={setCurrentPage}
+                    {/* user list container */}
+                    <UserList
+                        data={data}
+                        updateUserData={updateUserData}
+                        deleteUserData={deleteUserData}
+                    />
+
+                    {/* pagination container */}
+                    <Pagination
+                        currentPage={currentPage}
+                        data={data}
+                        setCurrentPage={setCurrentPage}
+                    />
+                </div>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={2500}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick={false}
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
                 />
-            </div>
-            <ToastContainer
-                position="top-right"
-                autoClose={2500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-            />
-        </>
-    );
+            </>
+        );
+    }
 };
 
 export default Dashboard;

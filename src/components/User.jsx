@@ -7,19 +7,21 @@ const User = ({ user, updateUserData, deleteUserData }) => {
 
     return (
         <>
-            <div className="flex items-center border border-gray-300 p-2.5 rounded-md">
-                <img
-                    className="hidden shrink-0 size-15.5 rounded-full customBreakpoint:inline-block "
-                    src={user?.avatar}
-                    alt="Avatar"
-                />
-                <div className="ms-3">
-                    <h3 className="text-md/6 font-medium text-gray-900">
-                        {user?.first_name} {user?.last_name}
-                    </h3>
-                    <p className="text-sm  text-gray-500 ">{user?.email}</p>
+            <div className="flex items-center flex-col gap-5 justify-between customBreakpoint:flex-row border border-gray-300 p-2.5 rounded-md">
+                <div className="flex items-center justify-between">
+                    <img
+                        className="shrink-0 size-15.5 rounded-full "
+                        src={user?.avatar}
+                        alt="Avatar"
+                    />
+                    <div className="ms-3">
+                        <h3 className="text-md/6 font-medium text-gray-900">
+                            {user?.first_name} {user?.last_name}
+                        </h3>
+                        <p className="text-sm  text-gray-500 ">{user?.email}</p>
+                    </div>
                 </div>
-                <div className="ml-auto flex items-center gap-4">
+                <div className="flex items-center gap-4">
                     <button
                         className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-1 px-4 border border-gray-300 rounded-sm capitalize hover:cursor-pointer"
                         onClick={() => setShowModal(true)}
