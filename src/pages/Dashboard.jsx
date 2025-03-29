@@ -94,7 +94,7 @@ const Dashboard = () => {
     // calling the getData function
     // scrolling the view to top
     useEffect(() => {
-        let userToken = JSON.parse(sessionStorage.getItem("token"));
+        let userToken = JSON.parse(localStorage.getItem("token"));
         if (userToken) {
             getData();
         } else {

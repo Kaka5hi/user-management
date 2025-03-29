@@ -42,7 +42,7 @@ const Login = () => {
                 // then navigate the user to dashboard
                 if (response.status === 200) {
                     const { token } = response.data;
-                    sessionStorage.setItem("token", JSON.stringify(token));
+                    localStorage.setItem("token", JSON.stringify(token));
                     navigate("/dashboard");
                 }
             })
@@ -56,7 +56,7 @@ const Login = () => {
     }
 
     useEffect(() => {
-        let userToken = JSON.parse(sessionStorage.getItem("token"));
+        let userToken = JSON.parse(localStorage.getItem("token"));
         if (userToken) {
             navigate("/dashboard");
         } else {

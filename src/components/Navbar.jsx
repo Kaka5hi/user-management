@@ -4,7 +4,7 @@ const Navbar = () => {
     let navigate = useNavigate();
 
     function handleLogout() {
-        sessionStorage.clear();
+        localStorage.removeItem("token");
         navigate("/");
     }
 
