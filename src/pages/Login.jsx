@@ -56,9 +56,11 @@ const Login = () => {
     }
 
     useEffect(() => {
-        let userToken = sessionStorage.getItem("token");
+        let userToken = JSON.parse(sessionStorage.getItem("token"));
         if (userToken) {
             navigate("/dashboard");
+        } else {
+            navigate("/");
         }
     }, []);
 

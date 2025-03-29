@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import UserList from "../components/UserList";
 import Pagination from "../components/Pagination";
 import { ToastContainer, toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+import { useNavigate } from "react-router-dom";
 
 let BASE_URL = "https://reqres.in/";
 
 const Dashboard = () => {
+    let navigate = useNavigate();
     const [dataFetching, setDataFetching] = useState(true);
 
     // state to store fetched data
@@ -16,6 +18,9 @@ const Dashboard = () => {
 
     // state to store current page
     const [currentPage, setCurrentPage] = useState(1);
+
+    // search state
+    const [searchInput, setSearchInput] = useState("");
 
     // function to update data of the user
     async function updateUserData(newData, userId) {
@@ -77,10 +82,25 @@ const Dashboard = () => {
         setDataFetching(false);
     }
 
+    const filteredUsers = useMemo(() => {
+        return data?.data?.filter((user) => {
+            const userName = user?.first_name + " " + user?.last_name;
+            if (userName.toLowerCase().includes(searchInput.toLowerCase())) {
+                return user;
+            }
+        });
+    }, [data, searchInput]);
+
     // calling the getData function
     // scrolling the view to top
     useEffect(() => {
-        getData();
+        let userToken = JSON.parse(sessionStorage.getItem("token"));
+        if (userToken) {
+            getData();
+        } else {
+            navigate("/");
+        }
+
         return () => {
             window.scroll({ top: 0, behavior: "smooth" });
         };
@@ -107,19 +127,38 @@ const Dashboard = () => {
                         Welcome to the Dashboard
                     </h1>
 
+                    <div>
+                        <input
+                            type="text"
+                            className="block w-full customBreakpoint:w-sm md:w-xl  mx-auto rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-md/6"
+                            placeholder="Search User.."
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                        />
+                    </div>
+
+                    {filteredUsers.length === 0 && (
+                        <p className="my-40 text-center text-xl text-gray-500 ">
+                            No user found
+                        </p>
+                    )}
+
                     {/* user list container */}
                     <UserList
-                        data={data}
+                        data={filteredUsers}
                         updateUserData={updateUserData}
                         deleteUserData={deleteUserData}
                     />
 
                     {/* pagination container */}
-                    <Pagination
-                        currentPage={currentPage}
-                        data={data}
-                        setCurrentPage={setCurrentPage}
-                    />
+
+                    {filteredUsers.length !== 0 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            data={data}
+                            setCurrentPage={setCurrentPage}
+                        />
+                    )}
                 </div>
                 <ToastContainer
                     position="top-right"
