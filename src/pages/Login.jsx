@@ -12,11 +12,26 @@ const Login = () => {
         password: "cityslicka",
     });
 
-    const [error, setError] = useState(false);
+    const [error, setError] = useState({ status: false, msg: "" });
 
     function handleLogin(e) {
         // prevent default behaviour of form in browser
         e.preventDefault();
+
+        if (userCredential.email === "" && userCredential.password === "") {
+            setError({ status: true, msg: "Input fields required" });
+            return;
+        }
+
+        if (userCredential.email === "") {
+            setError({ status: true, msg: "Email cannot be empty" });
+            return;
+        }
+
+        if (userCredential.password === "") {
+            setError({ status: true, msg: "Password cannot be empty" });
+            return;
+        }
 
         // making axios POST request with the user credential
         axios
@@ -32,9 +47,11 @@ const Login = () => {
                 }
             })
             .catch((error) => {
-                if (error.status === 400) {
-                    setError(true);
-                }
+                setError({ status: true, msg: "User not found" });
+                setUserCredential({
+                    email: "eve.holt@reqres.in",
+                    password: "cityslicka",
+                });
             });
     }
 
@@ -51,9 +68,9 @@ const Login = () => {
                 <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
                     Log in to your account
                 </h2>
-                {error && (
+                {error.status && (
                     <p className="mt-5 text-center text-md/9 font-semibold tracking-tight text-red-600">
-                        User not found
+                        {error.msg}
                     </p>
                 )}
             </div>
